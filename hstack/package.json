@@ -1,0 +1,15 @@
+{
+  "name": "@heyskylark/hstack",
+  "version": "0.1.0",
+  "private": true,
+  "description": "General-purpose custom agents and skills for Oh My Pi.",
+  "files": [
+    "agents",
+    "skills",
+    "THIRD_PARTY_NOTICES"
+  ],
+  "omp": {
+    "name": "HStack",
+    "description": "General-purpose custom agents and skills for Oh My Pi."
+  }
+}
