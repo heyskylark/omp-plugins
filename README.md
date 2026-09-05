@@ -1,14 +1,16 @@
 # OMP Plugin Stacks
 
-Personal Oh My Pi agents and skills, grouped into independently installable stacks. Each top-level stack directory is its own OMP plugin package, so a user or project can install only the capabilities it needs.
+Personal Oh My Pi capabilities grouped into independently installable stacks. Every top-level stack directory is an OMP plugin package with its own `package.json` and conventional OMP capability directories.
+
+This repository uses OMP's native `.omp-plugin/marketplace.json` catalog. It contains no Cursor runtime manifests or Cursor-specific task syntax. Each stack's `THIRD_PARTY_NOTICES` records source attribution.
 
 ## Stacks
 
 | Directory | Package | Purpose | Included capabilities |
 | --- | --- | --- | --- |
-| [`hstack/`](hstack/) | `@heyskylark/hstack` | General-purpose personal development workflows. | `comment-sicko` agent and the manual `/skill:no-comments` cleanup workflow. |
+| [`hstack/`](hstack/) | `@heyskylark/hstack` | General-purpose OMP development and verification workflows | `comment-sicko` and `verifier` agents plus `/skill:no-comments`, `/skill:create-verification-skill`, and `/skill:maintain-verification-skill` |
 
-Future stacks should live in their own top-level directories with independent `package.json` manifests and conventional OMP `agents/` and `skills/` directories. This keeps installation, versioning, and capability discovery isolated per stack.
+Future stacks should use the same layout:
 
 ```text
 <stack>/
@@ -22,43 +24,53 @@ Future stacks should live in their own top-level directories with independent `p
 
 ## Install HStack
 
-OMP links the local directory rather than copying it. Changes made in `hstack/` are therefore available to newly started OMP sessions without reinstalling the plugin.
+### OMP marketplace
 
-### User level
-
-A user-level link makes HStack available to OMP sessions in every project:
+Add this repository as an OMP marketplace, then install HStack:
 
 ```sh
-cd /Users/skylark/git/omp-plugins
-omp plugin link ./hstack --scope=user
+omp plugin marketplace add heyskylark/omp-plugins
+omp plugin install hstack@omp-plugins
 ```
 
-Verify the link:
+The default user scope makes HStack available in every project. To install only for the current project:
+
+```sh
+omp plugin install --scope project hstack@omp-plugins
+```
+
+Verify the installation:
 
 ```sh
 omp plugin list
+omp plugin doctor
 ```
 
-### Project level
+Restart OMP after installation so it discovers the stack's agents and skills.
 
-A project-level link makes HStack available only when OMP runs in that project. Run the command from the target project, not from this plugin repository:
+### Local development
+
+Clone the repository and link the package:
+
+```sh
+git clone https://github.com/heyskylark/omp-plugins.git ~/git/omp-plugins
+cd ~/git/omp-plugins
+omp plugin link ./hstack
+```
+
+The link points at the checkout rather than copying it. Pulling or editing `hstack/` therefore updates the files used by newly started OMP sessions.
+
+For a project-scoped development link, run from the target project:
 
 ```sh
 cd /path/to/target-project
-omp plugin link /Users/skylark/git/omp-plugins/hstack --scope=project
+omp plugin link --scope project ~/git/omp-plugins/hstack
 ```
 
-Verify the link from the same project:
-
-```sh
-omp plugin list
-```
-
-Restart OMP after linking so it discovers the stack's agents and skills.
 
 ## Use HStack
 
-Run the comment-cleanup workflow manually:
+Run the workflow manually:
 
 ```text
 /skill:no-comments
@@ -70,18 +82,65 @@ Optionally append a file, directory, range, or diff scope:
 /skill:no-comments src/api
 ```
 
-The skill delegates its comment-only audit to the `comment-sicko` custom agent, reviews the applied changes, and owns any accepted root-cause fixes and verification.
+The skill uses OMP's `task` tool to spawn `comment-sicko`. For broad scopes, that agent partitions independent search areas and dispatches one parallel batch of read-only `scout` agents. Scouts report evidence only; `comment-sicko` validates their findings and performs comment deletions centrally.
 
-## Remove HStack
+OMP's default `task.maxRecursionDepth` of `2` supports this topology:
 
-Remove a user-level link:
-
-```sh
-omp plugin uninstall @heyskylark/hstack --scope=user
+```text
+main OMP agent
+└── comment-sicko
+    └── scout agents
 ```
 
-For a project-level link, run the corresponding command from that project:
+If an installation lowers the recursion limit or restricts the `task` tool, `comment-sicko` searches directly rather than shrinking the audit.
+
+## Use verification workflows
+
+Generate and execute a project-native verification skill:
+
+```text
+/skill:create-verification-skill
+```
+
+Audit its feature map and live-driving instructions after product changes:
+
+```text
+/skill:maintain-verification-skill
+```
+
+Generated skills live at `.omp/skills/verify-<app>/`. HStack uses OMP `task` batches for read-only source waves, `hub` for supervised process lifecycles, `skill://` references for skill-owned assets, and native/MCP drivers for real-surface evidence.
+
+## Use the verifier agent
+
+HStack installs `verifier`, a read-only task agent for independently exercising completed changes. It resolves its model through the `@verifier` role, so define that role under `modelRoles` in OMP configuration before delegating work to it. The companion [`omp-configs`](https://github.com/heyskylark/omp-configs) repository includes this role.
+
+## Update plugin stacks
+
+Refresh the marketplace catalog and upgrade the installed plugin:
 
 ```sh
-omp plugin uninstall @heyskylark/hstack --scope=project
+omp plugin marketplace update omp-plugins
+omp plugin upgrade hstack@omp-plugins
+```
+
+`marketplace update` refreshes metadata; `plugin upgrade` installs the newer declared version. For a local link, update the checkout instead:
+
+```sh
+git -C ~/git/omp-plugins pull --ff-only
+```
+
+After an update, run `/reload-plugins` for skills and commands. Restart OMP when agent definitions, tools, hooks, or extension modules change.
+
+## Remove plugin stacks
+
+Remove user-scoped installs:
+
+```sh
+omp plugin uninstall hstack@omp-plugins
+```
+
+For a project-scoped install:
+
+```sh
+omp plugin uninstall --scope project hstack@omp-plugins
 ```

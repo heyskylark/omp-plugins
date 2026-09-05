@@ -1,0 +1,34 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "omp-plugins",
+  "owner": {
+    "name": "heyskylark"
+  },
+  "metadata": {
+    "description": "Personal Oh My Pi agents, skills, and tools grouped into installable stacks.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "hstack",
+      "description": "OMP-native comment cleanup and project verification workflows.",
+      "source": "./hstack",
+      "version": "0.3.0",
+      "author": {
+        "name": "heyskylark"
+      },
+      "homepage": "https://github.com/heyskylark/omp-plugins/tree/main/hstack",
+      "repository": "https://github.com/heyskylark/omp-plugins",
+      "category": "development",
+      "keywords": [
+        "omp",
+        "comments",
+        "code-quality",
+        "verification",
+        "testing",
+        "skills",
+        "orchestration"
+      ]
+    }
+  ]
+}

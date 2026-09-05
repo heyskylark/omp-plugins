@@ -22,16 +22,21 @@ Resolve the exact scoped paths and base revision before delegation. Read reposit
 
 ### 2. Delegate the comment-only pass
 
-Call OMP's `task` tool once with `agent: "comment-sicko"`. Use an isolated worktree when the repository has a usable Git `HEAD`; successful isolated edits can then be applied without exposing the parent checkout to partial agent work. Otherwise use the shared checkout and keep the scope exact.
+Call OMP's `task` tool once with one task item whose `agent` is exactly `comment-sicko`. The skill runs in the current OMP agent; it is not an executable scheduler on its own.
+
+Use an isolated worktree when the repository has a usable Git `HEAD`; successful isolated edits can then be applied without exposing the parent checkout to partial agent work. Otherwise use the shared checkout and keep the scope exact.
 
 Give the task a complete OMP assignment:
 
-- `context`: the cleanup goal, immutable scope, base revision, and the contract that only comment text may change.
-- `Target`: exact files or diff and explicit non-goals.
-- `Change`: delete comments under the agent's policy and flag code-design causes without editing application code.
-- `Acceptance`: comment-only diff plus the required deletion, `MUST KILL`, and skip report. Tell the worker to skip formatters, linters, builds, and tests.
+- `context`: `# Goal`, `# Constraints`, and `# Contract` sections defining the cleanup goal, immutable scope, base revision, and the rule that only comment text may change.
+- `task`: `# Target`, `# Change`, and `# Acceptance` sections naming exact files or diff, explicit non-goals, the required comment-only edit, and the deletion, `MUST KILL`, and skip report.
+- `agent`: `comment-sicko`.
 
-Do not duplicate or weaken the agent's policy in the task text.
+Tell the worker to skip formatters, linters, builds, and tests. Do not duplicate or weaken its comment policy.
+
+For a broad scope containing independent file or directory groups, require `comment-sicko` to partition the search and dispatch one parallel batch of read-only `scout` children. Scouts only report candidate locations and evidence; they never edit. `comment-sicko` remains the integration owner, validates every report, and performs all comment deletions itself. For a small or tightly coupled scope, require direct search without delegation overhead.
+
+If nested task spawning is unavailable because the configured recursion depth or tool policy forbids it, `comment-sicko` must search the scope directly rather than narrowing or skipping the audit.
 
 ### 3. Review the actual result
 

@@ -6,9 +6,14 @@ tools:
   - read
   - grep
   - glob
+  - lsp
+  - web_search
   - edit
   - bash
-  - lsp
+  - task
+  - hub
+spawns:
+  - scout
 blocking: true
 read-summarize: false
 ---
@@ -28,6 +33,22 @@ The parent-provided files or diff define the mutation fence and the set of comme
 When no scope is provided, inspect the current change against its base branch, defaulting to `main`. Include committed branch changes, staged and unstaged work, and relevant untracked files. Treat all pre-existing working-tree changes as user work: touch only comments covered by this audit.
 
 Read enough surrounding code to judge every candidate. Use OMP's `lsp` operations when symbol definitions, references, types, or contracts resolve uncertainty. For behavior imposed by a dependency, platform, vendor, or protocol, consult current primary documentation or source when available. Never invent a constraint.
+
+## Search orchestration
+
+First inventory the assigned fence. When it contains at least two genuinely independent file or directory groups and the `task` tool is available, partition those groups into non-overlapping scopes and dispatch exactly one parallel task batch. Every child task must use `agent: scout`.
+
+The batch `context` must define:
+
+- `# Goal`: find comment and suppression candidates inside the assigned fence.
+- `# Constraints`: read-only investigation; no edits, formatting, builds, linters, or tests.
+- `# Contract`: every finding includes an exact path and location, comment category, nearby-code evidence, and potential preserve exception; uncertainty must be explicit.
+
+Each child `task` must define an exact `# Target`, a read-only `# Change`, and report-only `# Acceptance`. Scouts must not classify a deletion as final, modify files, overlap another scout's scope, or spawn more agents.
+
+Remain the integration owner. Inspect cross-cutting context while scouts run, incorporate every delivered report, and re-read the relevant code before deciding or editing. A scout finding is a lead, never authorization to delete. Perform all comment deletions centrally after validation.
+
+For a small or tightly coupled fence, or when nested spawning is unavailable because of recursion depth or tool policy, search directly. Never narrow or skip the requested audit merely because delegation is unavailable. Never spawn an editing agent.
 
 ## Delete
 

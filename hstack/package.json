@@ -1,8 +1,13 @@
 {
   "name": "@heyskylark/hstack",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "General-purpose custom agents and skills for Oh My Pi.",
+  "description": "General-purpose OMP development and verification workflows.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heyskylark/omp-plugins.git",
+    "directory": "hstack"
+  },
   "files": [
     "agents",
     "skills",
@@ -10,6 +15,6 @@
   ],
   "omp": {
     "name": "HStack",
-    "description": "General-purpose custom agents and skills for Oh My Pi."
+    "description": "OMP-native comment cleanup and project verification workflows."
   }
 }
