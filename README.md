@@ -8,7 +8,7 @@ This repository uses OMP's native `.omp-plugin/marketplace.json` catalog. It con
 
 | Directory | Package | Purpose | Included capabilities |
 | --- | --- | --- | --- |
-| [`hstack/`](hstack/readme.md) | `@heyskylark/hstack` | General-purpose OMP development and verification workflows | `comment-sicko` and `verifier` agents; architect, how, why, arena, interrogate, decision-trail, prose-editing, comment-cleanup, and verification workflows; 14 supporting principle skills |
+| [`hstack/`](hstack/readme.md) | `@heyskylark/hstack` | General-purpose OMP development and verification workflows | 52 skills: 29 workflows and 23 principles, including explicitly selected `sky-mode` with 23 playbooks; native task agents for cleanup and verification |
 
 Future stacks should use the same layout:
 
@@ -69,6 +69,31 @@ omp plugin link --scope project ~/git/omp-plugins/hstack
 
 
 ## Use HStack
+
+HStack 0.5.0 includes the following workflow groups. Invoke an exact skill name with `/skill:<name> [request]` when skill commands are enabled; the [full catalog](hstack/readme.md#capabilities) describes each workflow and all 23 principles.
+
+| Group | Skills | Example |
+| --- | --- | --- |
+| Understand and design | `architect`, `how`, `why`, `arena`, `interrogate`, `blast-radius`, `figure-it-out` | `/skill:blast-radius Change the session ownership contract` |
+| Implement and coordinate | `sky-mode`, `swarm`, `tdd`, `typescript-best-practices` | `/skill:sky-mode Implement the agreed settings API` |
+| Explain and clean up | `bro`, `teach`, `technical-writing`, `unslop`, `deslop`, `no-comments`, `show-me-your-work` | `/skill:technical-writing Rewrite the API migration guide` |
+| Verify and control | `control-cli`, `control-ui`, `verify-this`, `create-verification-skill`, `maintain-verification-skill` | `/skill:verify-this Confirm that cancellation stops the running job` |
+| Remember, author, and integrate | `recall`, `reflect`, `automate-me`, `setup-hstack`, `make-bot-ui`, `create-skill` | `/skill:create-skill Capture this repository's release workflow` |
+
+The [23 supporting principles](hstack/readme.md#supporting-principles) include nine additional disciplines: `principle-attack-the-premise`, `principle-build-the-lever`, `principle-experience-first`, `principle-migrate-callers-then-delete-legacy-apis`, `principle-model-the-domain`, `principle-type-system-discipline`, `principle-never-block-on-the-human`, `principle-sequence-verifiable-units`, and `principle-test-behavior-not-implementation`. Use them directly for focused work, for example `/skill:principle-model-the-domain Review the job state model`, or through the workflows that load them.
+
+`sky-mode` is an explicitly requested workflow, not an always-on runtime mode. Its 23 playbooks cover investigation, planning, implementation, review, and delivery; it uses native OMP orchestration rather than installing a separate runner. The bundled `sky-agent` is an optional bounded worker that autoloads this skill, does not spawn children, and leaves orchestration and todos with its parent.
+
+### Runtime and configuration boundaries
+
+- Skills provide instructions, not new tool APIs. `task`, `hub`, parent-owned `todo`, session artifacts, and available native/MCP drivers carry out the work. Tool access, agent policies, recursion limits, credentials, and plan-mode restrictions still apply.
+- Agent models route through existing configuration (`task.agentModelOverrides`, agent frontmatter, and `modelRoles`), not hardcoded model lists or a custom per-task model field. Preserve user settings; `setup-hstack` inspects and guides configuration rather than replacing it.
+- `recall` and `reflect` use structured memory only when the configured backend exposes the corresponding tools. Memory defaults to `off`; `local` supports summary/lesson artifacts but not structured recall/reflect. Available session or repository evidence is an explicit fallback, not equivalent memory coverage.
+- Authored skills belong in `.omp/skills/<name>/SKILL.md` or a package's `skills/<name>/SKILL.md`. Optional `manage_skill` requires `autolearn.enabled` and writes only the managed store; it does not edit authored skills.
+- `make-bot-ui` builds an application integration around `omp --mode rpc` (JSONL over stdio). A user-built local server adapter must bridge a browser to that process; OMP does not supply a native HTTP webhook or hosted bot service.
+- Verification claims require observed evidence. If you explicitly defer runtime checks, the workflow must report what remains unverified instead of treating source review as a runtime pass.
+
+### Comment cleanup
 
 Run the workflow manually:
 

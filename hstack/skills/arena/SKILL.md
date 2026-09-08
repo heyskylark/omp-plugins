@@ -41,7 +41,7 @@ If a candidate fails or produces no usable artifact, proceed with N−1 and reco
 
 ## Phase C: Cross-judge
 
-Wait until every candidate has completed, failed, or been cancelled, and freeze the usable artifacts before judging. Only then launch an independent review-capable judge, preferably a configured model family different from the parent's. Give it the rubric and candidates by neutral path/label, not the parent's preference. Require read-only work, criterion-by-criterion scores, evidence, a recommended base, and rationale. No edits or recursive orchestration.
+Wait until every candidate has completed, failed, or been cancelled, and freeze the usable artifacts before judging. Only then launch an independent configured general task agent, or a discovered judge whose role, tools, and output contract explicitly support the full comparison, preferably a configured model family different from the parent's. Give it the rubric and candidates by neutral path/label, not the parent's preference. Require read-only work, criterion-by-criterion scores, evidence, a recommended base, and rationale. No edits or recursive orchestration. Bundled `reviewer` is patch-bug-only and cannot supply design judgments, criterion scores, or base selection; changing its output schema does not make it a compatible judge.
 
 The judge runs in parallel with the parent's reading and independent scoring in Phase D, never with candidates still writing. Select an existing appropriate agent through its configured roles, not a hardcoded model or new required role. If only the same model is available, disclose reduced independence. If no judge can run, record the missing cross-judge and make a clearly labeled parent-only judgment; do not claim cross-judge agreement.
 

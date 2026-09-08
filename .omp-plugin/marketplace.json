@@ -11,9 +11,9 @@
   "plugins": [
     {
       "name": "hstack",
-      "description": "OMP-native architecture, comment cleanup, and project verification workflows.",
+      "description": "OMP-native planning, architecture, orchestration, implementation, verification, delivery, and knowledge workflows.",
       "source": "./hstack",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "author": {
         "name": "heyskylark"
       },
