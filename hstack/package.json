@@ -1,8 +1,8 @@
 {
   "name": "@heyskylark/hstack",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "private": true,
-  "description": "General-purpose OMP development and verification workflows.",
+  "description": "OMP-native planning, architecture, orchestration, implementation, verification, delivery, and knowledge workflows.",
   "repository": {
     "type": "git",
     "url": "https://github.com/heyskylark/omp-plugins.git",
@@ -11,10 +11,11 @@
   "files": [
     "agents",
     "skills",
+    "readme.md",
     "THIRD_PARTY_NOTICES"
   ],
   "omp": {
     "name": "HStack",
-    "description": "OMP-native comment cleanup and project verification workflows."
+    "description": "OMP-native planning, architecture, orchestration, implementation, verification, delivery, and knowledge workflows."
   }
 }
