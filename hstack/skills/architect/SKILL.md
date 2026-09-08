@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Design before implementing. Ground the existing system, compare at least two structurally different designs, choose a contract, and implement it completely. If repeated implementation friction disproves the design, re-ground and replace it rather than accumulating workarounds.
 
-This workflow uses native OMP tools and the three bundled references under `skill://architect/references/`. It does not require pstack's `how`, `why`, `arena`, `interrogate`, or principle skills, external runner CLIs, or particular model subscriptions.
+This workflow composes the bundled `how`, `why`, `arena`, `interrogate`, and principle skills. At each phase, read the named `skill://` resources and apply their instructions in the current workflow. A skill call is a read-and-follow operation, not a new orchestration agent. Keep the same parent, progress list, and design notepad across phases.
 
 ## Start and preserve state
 
@@ -18,29 +18,26 @@ Use a scoped session-local artifact such as `local://architect-notepad.md` as th
 
 ## 1. Ground the problem
 
-Resolve requirements and integration constraints from the repository before asking the user. Trace the affected path from caller entry point through types, data transformations, state ownership, external boundaries, and observable results. Read complete relevant sections, not just names or search hits. Use OMP `read`, `grep`, and `glob` for evidence; use the available LSP for symbol definitions, references, and types, including references before changing exported symbols.
+Read and run `skill://how` over every affected subsystem. Naming a file is not grounding: produce its traced runtime model from caller entry point through types, transformations, state ownership, external boundaries, and observable results. Use its inline or parallel research path according to scope, and verify source evidence before designing.
 
-Record paths and symbols, invariants, error behavior, existing tests, extension seams, and unknowns. When changing ownership or layering, investigate the rationale in existing docs, call sites, and history. Distinguish observed facts from inference. Truly greenfield work may omit existing-system traces, but must still state external contracts and constraints.
+If changing ownership or layering, also read and run `skill://why` to recover the rationale behind the existing shape. Carry its Preserve / Change / Avoid / Risk constraints into the design, retaining its distinction between observed facts and inference. Do not recursively alternate `how` and `why`; reuse their completed artifacts within this investigation.
 
-Investigate inline first. If two or more substantial independent subsystems need research, use one `task` batch of read-only `scout` agents with bounded scopes. Do not delegate design reasoning to scouts. Verify their evidence and consolidate the grounding before candidate generation.
+Record the model, constraints, evidence links, and unresolved questions in the parent notepad. Truly greenfield work may omit existing-system traces but must still establish external contracts and invariants. Use available LSP references before changing exported symbols.
 
 ## 2. Design twice, then synthesize
 
-Write the consumer's intended usage first. Define at least two whole-shape alternatives that meet the same requirements but differ in ownership, data representation, or module boundaries—not merely names or file placement. Give each a fair treatment even if the first looks sufficient.
+Read and apply `skill://principle-exhaust-the-design-space`. Write the consumer's intended usage first. Require at least two whole-shape alternatives that meet the same requirements but differ in ownership, data representation, or module boundaries—not merely names or file placement.
 
-For substantial independent candidate work, dispatch one OMP `task` batch. Use available design-capable agents; omit `agent` only when the configured default fits. The normal general-purpose task agent can produce candidate designs. Model diversity is optional: select already configured role-backed agents when available, never hardcode upstream model IDs or pass an unsupported `model` field to `task`. A same-model comparison is valid but must not be described as multi-model evidence.
+Read and run `skill://arena` with this contract:
 
-The shared `context` must contain `# Goal`, `# Constraints`, and `# Contract`: requirement, scope/non-goals, grounding URIs, common invariants, and the candidate output format. Each task must contain `# Target`, `# Change`, and `# Acceptance`: its assigned structural alternative, exact evidence and reference URIs, and the complete expected package. Require every candidate to read:
+- Artifact: a candidate design package, not repository edits. Use `skill://architect/references/runner-prompt.md` as each candidate's instructions and `skill://architect/references/rationale-template.md` as the output shape.
+- Grounding: the completed `how` model, applicable `why` constraints, the requirement, scope/non-goals, and parent notepad URI.
+- Candidates: assign structurally distinct directions while preserving the same requirements and output contract. Two viable distinct candidates are required before synthesis; replace a dropout rather than silently proceeding with one.
+- Screening: use `skill://architect/references/design-red-flags.md` before scoring. Reject or revise shallow modules, leaked information, temporal decomposition, and pass-through layers.
+- Rubric: interface depth, explicit state ownership and invariants, caller complexity, migration cost, and failure behavior. Prefer the smallest useful public surface hiding the required complexity.
+- Ownership: candidates are repository-read-only and return `agent://` artifacts. They do not spawn children, update the parent notepad, or run builds, formatters, linters, or tests.
 
-- `skill://architect/references/runner-prompt.md`
-- `skill://architect/references/rationale-template.md`
-- `skill://architect/references/design-red-flags.md`
-
-Candidates are repository-read-only, do not spawn children, and skip builds, formatters, linters, and tests. They return their package as agent output; no worktree or shared output file is needed. Use returned `agent://` URIs, not guessed IDs, to recover full results. Use `hub` for follow-up with actual returned agent IDs. Continue independent work while results run; wait only when blocked, and do not poll for auto-delivered results.
-
-Follow the tool schema actually exposed by the session. If batching is disabled, use its flat task form with the same shared grounding artifact. If delegation is unavailable, depth-limited, disallowed, or disproportionate for the scope, produce both candidates inline and disclose that limitation. Never drop the second design to work around tooling restrictions.
-
-Screen every candidate using the red-flags reference; revise or reject unsuitable shapes before synthesis. Compare interface depth, ownership, invariants, caller complexity, migration cost, and failure behavior. Prefer the smallest useful public surface hiding the needed complexity, not the most layers or the fewest implementation lines. The parent writes one synthesized package using the rationale template: chosen base, incorporated ideas, rejected alternatives with reasons, and implementation/verification order. Do not treat an agent's successful exit as acceptance of its design.
+Apply arena's cross-judgment, base selection, and synthesis phases. The parent writes one coherent package and fills its “Synthesis decision” section with the base, incorporated ideas, rejected alternatives, dropouts, and judge's assessment. Design verification checks usage/signature agreement and constraints; it does not claim implemented behavior. Model diversity and any restricted-mode limitations follow arena's OMP policy and must be disclosed honestly.
 
 ## 3. Agree only when requested
 
@@ -48,16 +45,18 @@ By default continue directly from synthesis into implementation. If the user req
 
 This is a human design checkpoint, not an instruction to invoke OMP's context `checkpoint`/`rewind` tools, which do not restore files. Respect active OMP plan-mode write restrictions and its approval flow; the skill never grants permission to leave plan mode or start implementation. Do not commit a broken scaffold. Human feedback that changes the shape becomes grounding evidence; rework the candidates before writing code.
 
+Read and apply `skill://principle-foundational-thinking` and `skill://principle-outcome-oriented-execution`: establish the contract first, then complete working behavior without leaving a broken scaffold. When the user requests adversarial pressure before implementation, read and run `skill://interrogate` on the synthesized sketch and grounding. Incorporate accepted findings into the design; interrogate itself returns a verdict and does not apply changes.
+
 ## 4. Implement the chosen contract
 
 Implement real behavior against the sketch. Reuse repository conventions and migrate all affected callers without compatibility shims unless explicitly required. For substantial independent implementation slices, define interfaces and ownership before dispatching one `task` batch; use filesystem isolation for editing agents when available. If isolation is unavailable, keep edits with one owner rather than allowing competing writes. Keep tightly coupled changes together. Children skip validation while edits are in flight; the integration owner verifies the integrated result.
 
 Record meaningful deviations and why they occurred. A missing parameter may reveal a missed requirement, a mistaken boundary, or implementation overreach; investigate rather than silently expanding the interface.
 
-If two or more independent deviations repeat the same workaround, optional fields are always required in practice, state unexpectedly needs locks, or callers must learn internal ordering rules, reassess the shape. Legitimate domain edge cases alone do not condemn it. Trace what was built, incorporate the new constraints, subtract unnecessary structure, and return to design comparison. Replace only in-scope obsolete work; preserve unrelated user changes.
+If two or more independent deviations repeat the same workaround, optional fields are always required in practice, state unexpectedly needs locks, or callers must learn internal ordering rules, reassess the shape. Legitimate domain edge cases alone do not condemn it. Read and apply `skill://principle-fix-root-causes`, `skill://principle-redesign-from-first-principles`, and `skill://principle-subtract-before-you-add`. Run `skill://how` on what was built, incorporate the new constraints, subtract unnecessary structure, and return to `skill://arena` for design comparison. Replace only in-scope obsolete work; preserve unrelated user changes.
 
 ## 5. Verify and deliver
 
-Exercise the requested behavior through the real surface and inspect its result. Use the repository's verification skill when applicable, OMP browser/native drivers for UI, `hub`-supervised processes for services and interactive CLIs, and relevant existing checks. Verify the integrated change after agents finish; type-checking a sketch is not behavioral proof. Keep a regression test for a plausible bug or genuinely uncertain invariant, not just to assert implementation wiring.
+Read and apply `skill://principle-prove-it-works`. Exercise the requested behavior through the real surface and inspect its result. Use the repository's verification skill when applicable, OMP browser/native drivers for UI, `hub`-supervised processes for services and interactive CLIs, and relevant existing checks. Verify the integrated change after agents finish; type-checking a sketch is not behavioral proof. Keep a regression test for a plausible bug or genuinely uncertain invariant, not just to assert implementation wiring.
 
 After proof, remove throwaway scaffolds and scratch scripts, update affected documentation where appropriate, and retain evidence. Report the chosen architecture, accepted tradeoffs, implementation scope, meaningful deviations, exact checks and observed results, and any blockers. Reference the session rationale and candidate artifacts; never describe an unimplemented sketch as completed code.

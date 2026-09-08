@@ -14,9 +14,11 @@ Write this before the types. Show what the consumer imports, calls, and receives
 
 Sketch the module map, core types, signatures, ownership, and data flow in fenced blocks. Name the invariants encoded in types, boundary validation, and failure semantics. Explain what complexity the interface hides, what callers still need to know, and why the public surface is no larger than necessary. Keep pseudocode out of production files.
 
+Read and apply `skill://principle-boundary-discipline` when placing validation and adapters. Cite the applicable principle skills behind load-bearing decisions rather than restating their entire guidance.
+
 ## Synthesis decision
 
-Candidates leave this for the parent. The parent identifies the compared candidate artifacts, screening results, chosen base and why, ideas incorporated from other candidates, and rejected ideas with reasons. Record actual model provenance only when known; disclose inline or same-model comparison.
+Candidates leave this for the parent running `skill://arena`. Identify the compared candidate artifacts, screening and cross-judge results, chosen base and why, ideas incorporated from other candidates, and rejected ideas with reasons. Record actual model provenance only when known; disclose inline or same-model comparison.
 
 ## Tradeoffs accepted
 

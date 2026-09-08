@@ -8,7 +8,7 @@ This repository uses OMP's native `.omp-plugin/marketplace.json` catalog. It con
 
 | Directory | Package | Purpose | Included capabilities |
 | --- | --- | --- | --- |
-| [`hstack/`](hstack/readme.md) | `@heyskylark/hstack` | General-purpose OMP development and verification workflows | `comment-sicko` and `verifier` agents plus `/skill:architect`, `/skill:no-comments`, `/skill:create-verification-skill`, and `/skill:maintain-verification-skill` |
+| [`hstack/`](hstack/readme.md) | `@heyskylark/hstack` | General-purpose OMP development and verification workflows | `comment-sicko` and `verifier` agents; architect, how, why, arena, interrogate, decision-trail, prose-editing, comment-cleanup, and verification workflows; 14 supporting principle skills |
 
 Future stacks should use the same layout:
 
@@ -101,9 +101,7 @@ If an installation lowers the recursion limit or restricts the `task` tool, `com
 /skill:architect with checkpoint Redesign job ownership
 ```
 
-Architect grounds the existing system, compares at least two structurally different designs, and synthesizes caller-first types and module boundaries before implementing and verifying. Add `with checkpoint` to review the design before code changes, or `design only` to stop with the design. It uses parent-owned OMP todos and `local://` notepads, native task orchestration, and bundled `skill://` references—not Cursor runners or uninstalled skills. See [HStack's README](hstack/readme.md) for the workflow and OMP authoring conventions.
-
-HStack is influenced by [pstack](https://github.com/cursor/plugins/tree/main/pstack); adapted material is credited in [THIRD_PARTY_NOTICES](hstack/THIRD_PARTY_NOTICES).
+Architect runs `how` for runtime grounding, `why` for ownership rationale, and `arena` to compare and synthesize structurally distinct designs before implementing and verifying. Add `with checkpoint` to review the design before code changes, or `design only` to stop with the design; request `interrogate` for adversarial review. These supporting workflows and their principle skills are bundled with HStack and use parent-owned OMP todos, `local://` notepads, and native orchestration. See [HStack's README](hstack/readme.md) for usage and authoring conventions.
 
 ## Use verification workflows
 
